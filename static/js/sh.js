@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: '/static/js',
+    baseUrl: '/js',
     paths: {
         'easel'     : 'external/easeljs-0.7.1.min',
         'crafty'    : 'external/crafty',

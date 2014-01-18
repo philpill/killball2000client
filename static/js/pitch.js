@@ -144,7 +144,7 @@ define(function(require){
         this.x = 0;
         this.y = 0;
 
-        this.addChild(new createjs.Bitmap('/static/img/pitch.png'));
+        this.addChild(new createjs.Bitmap('/img/pitch.png'));
 
         this._tackleZones = new createjs.Container();
 
