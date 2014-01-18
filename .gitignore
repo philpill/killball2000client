@@ -13,6 +13,3 @@ logs
 results
 build
 .grunt
-
-node_modules
-.openshift
