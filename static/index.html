@@ -1,9 +1,68 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>killball2000 client</title>
-  </head>
-  <body>
-    <h1>killball2000 client</h1>
-  </body>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" />
+        <link rel="stylesheet/less" href="/static/css/sh.less" />
+        <title>Squig Hopper Game Client</title>
+    </head>
+    <body>
+        <div class="container">
+
+            <header>
+                <h1>Squig Hopper</h1>
+            </header>
+
+            <section class="content">
+
+                <canvas id="Stage" height="300" width="520"></canvas>
+
+                <article class="game">
+                    <table class="table table-striped table-condensed table-bordered">
+                        <tr><td>Turn Number</td><td><span class="value turn-number"></span></td></tr>
+                        <tr><td>Turn Team</td><td><span class="value turn-team"></span></td></tr>
+                    </table>
+                    <button type="button" class="btn btn-danger end-turn">end turn</button>
+                </article>
+
+                <article class="player">
+                    <table class="table table-striped table-condensed table-bordered">
+                        <tr>
+                            <td colspan="2"></td>
+                            <td>m</td>
+                            <td>s</td>
+                            <td>ag</td>
+                            <td>av</td>
+                        </tr>
+                        <tr>
+                            <td><span class="value name">-</span></td></td>
+                            <td><span class="value position">-</span></td>
+                            <td><span class="value movement">-</span></td>
+                            <td><span class="value strength">-</span></td>
+                            <td><span class="value agility">-</span></td>
+                            <td><span class="value armour">-</span></td>
+                        </tr>
+                    </table>
+                </article>
+
+                <article class="console">
+                    <ul class="list-unstyled"></ul>
+                </article>
+
+            </section>
+
+            <footer>
+                <ul class="list-unstyled">
+                    <li><a href="http://sh.industrialnation.co.uk">sh.industrialnation.co.uk</a></li>
+                    <li><a href="https://github.com/philpill/SquigHopper">github</a></li>
+                    <li><a href="http://www.games-workshop.com/gws/content/article.jsp?categoryId=cat480004a&aId=2600005">games workshop: bloodbowl</a></li>
+                    <li><a href="http://www.bloodbowlonline.com/LivingRulebook5.pdf">bloodbowl living rulebook</a></li>
+                    <li><a href="http://www.games-workshop.com/gws/catalog/productDetail.jsp?prodId=prod1600122a&amp;_requestid=990491">wtf is a Squig Hopper?</a></li>
+                </ul>
+            </footer>
+
+        </div>
+        <script src="/static/js/external/require.js" data-main="/static/js/sh.js"></script>
+    </body
 </html>
