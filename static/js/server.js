@@ -1,7 +1,7 @@
 define(function(require){
 
     var config = JSON.parse(require('text!config.js'));
-    var team_fixtures = JSON.parse(require('text!fixtures/teams.js'));
+    // var team_fixtures = JSON.parse(require('text!fixtures/teams.js'));
 
     var Team = require('team');
     var Player = require('player');
@@ -110,23 +110,28 @@ define(function(require){
 
         var dfd = new $.Deferred();
 
-        mock.getTeams();
+        $.ajax({
 
-        $.getJSON('/data/teams', function (data) {
+            url: config.apiServer + '/api/game/teams',
+            type: 'GET',
+            success: function (data) {
 
-            var teams = _generateTeams(data);
+                var teams = _generateTeams(data.teams);
 
-            for (var i = 0; i < teams.length;i++) {
+                for (var i = 0; i < teams.length;i++) {
 
-                var team = teams[i];
+                    var team = teams[i];
 
-                teams[i].players = _generatePlayers(team.name, team.colour, team.players);
+                    teams[i].players = _generatePlayers(team.name, team.colour, team.players);
+                }
+
+                dfd.resolve(teams);
+            },
+            beforeSend: function (xhr) {
+
+                xhr.setRequestHeader('Origin', 'http://client-killball2000.rhcloud.com');
             }
-
-            dfd.resolve(teams);
         });
-
-        mock.respond();
 
         return dfd;
     }

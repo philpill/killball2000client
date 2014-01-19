@@ -9,7 +9,8 @@ app.use(express.compress());
 app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res){
-        res.render('static/index');
+
+    res.render('static/index');
 });
 
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP;

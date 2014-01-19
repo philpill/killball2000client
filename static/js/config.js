@@ -1,4 +1,6 @@
 {
+    "apiServer" : "http://server-killball2000.rhcloud.com",
+    "_apiServer" : "http://localhost:8090",
     "width"     : 26,
     "height"    : 15,
     "tile" : {
