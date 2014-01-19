@@ -112,7 +112,7 @@ define(function(require){
 
         $.ajax({
 
-            url: config.apiServer + '/api/game/teams',
+            url: config.apiServer + '/teams',
             type: 'GET',
             success: function (data) {
 
