@@ -1,6 +1,6 @@
 define(function(require){
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
     var team_fixtures = JSON.parse(require('text!fixtures/teams.js'));
 
     require('sinon');

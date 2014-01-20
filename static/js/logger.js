@@ -8,7 +8,7 @@ define(function(require){
 
     var $ = require('jquery');
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
 
     return (function () {
 

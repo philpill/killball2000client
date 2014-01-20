@@ -3,7 +3,7 @@ define(function(require){
     require('jquery');
     require('astar');
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
 
     var tile = config.tile;
 

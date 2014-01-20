@@ -23,7 +23,7 @@ require.config({
     deps: ['game', 'easel', 'less'],
     callback: function(Game) {
 
-        console.log('squig hopper');
+        console.log('☠ killball2000');
 
         var stage = new createjs.Stage("Stage");
 

@@ -10,7 +10,7 @@ define(function(require){
 
     var logger = require('logger');
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
     var utils = require('utils');
     var attributes = {
         position:   'lineman',

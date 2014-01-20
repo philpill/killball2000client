@@ -1,6 +1,6 @@
 define(function(require){
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
     // var team_fixtures = JSON.parse(require('text!fixtures/teams.js'));
 
     var Team = require('team');
@@ -90,7 +90,7 @@ define(function(require){
         return players;
     }
 
-    function _generateTeams(data) {
+    function _generateTeams (data) {
 
         var teams = [];
 
@@ -106,39 +106,48 @@ define(function(require){
         return teams
     }
 
-    function getTeams() {
+    function getTeams () {
 
         var dfd = new $.Deferred();
 
-        $.ajax({
+        $.get(config.apiServer + '/teams')
+        .done(function (data) {
 
-            url: config.apiServer + '/teams',
-            type: 'GET',
-            success: function (data) {
+            var teams = _generateTeams(data);
 
-                var teams = _generateTeams(data.teams);
+            for (var i = 0; i < teams.length;i++) {
 
-                for (var i = 0; i < teams.length;i++) {
+                var team = teams[i];
 
-                    var team = teams[i];
-
-                    teams[i].players = _generatePlayers(team.name, team.colour, team.players);
-                }
-
-                dfd.resolve(teams);
-            },
-            beforeSend: function (xhr) {
-
-                xhr.setRequestHeader('Origin', 'http://client-killball2000.rhcloud.com');
+                teams[i].players = _generatePlayers(team.name, team.colour, team.players);
             }
+
+            dfd.resolve(teams);
         });
+
+        return dfd;
+    }
+
+    function playerMove (player, newPosition) {
+
+        var dfd = new $.Deferred();
+
+        var data = {
+
+            "x" : newPosition.gridX,
+            "y" : newPosition.gridY
+        };
+
+        $.post(config.apiServer + '/players/' + player.id + '/move', data)
+        .done(dfd.resolve);
 
         return dfd;
     }
 
     return {
 
-        getTeams : getTeams,
-        dodge : dodge
+        getTeams    : getTeams,
+        playerMove  : playerMove,
+        dodge       : dodge
     };
 });

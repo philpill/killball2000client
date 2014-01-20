@@ -1,6 +1,6 @@
 define(function(require){
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
 
     var Cursor = function () {
 

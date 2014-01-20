@@ -2,7 +2,7 @@ define(function(require){
 
     var createjs = require('easel');
 
-    var config = JSON.parse(require('text!config.js'));
+    var config = require('config');
     var utils = require('utils');
     var _ = require('underscore');
 
