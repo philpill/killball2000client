@@ -327,13 +327,7 @@ define(function(require){
         return this._cursor;
     }
 
-    function loadTeams () {
-
-        return $.when(server.getTeams())
-        .then((loadTeamsSuccess).bind(this));
-    }
-
-    function loadTeamsSuccess (teams) {
+    function loadTeams (teams) {
 
         this._teams = teams;
         _gameTurnNumber = 0;
@@ -366,16 +360,19 @@ define(function(require){
 
         this.addChild(getCursor.call(this));
 
-        $.when(loadTeams.call(this))
-        .then((function () {
+        $.when(server.getGame())
+        .then(getGameSuccess.bind(this));
+    }
 
-            this.stage.update();
+    function getGameSuccess (data) {
 
-            this.stage.enableMouseOver();
+        loadTeams.call(this, [data.home, data.away]);
 
-            newTurn.call(this);
+        this.stage.update();
 
-        }).bind(this));
+        this.stage.enableMouseOver();
+
+        newTurn.call(this);
     }
 
     function onStageMouseMove (e) {

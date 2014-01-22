@@ -128,6 +128,28 @@ define(function(require){
         return dfd;
     }
 
+    function getGame () {
+
+        var dfd = new $.Deferred();
+
+        $.get(config.apiServer + '/games')
+        .done(function (games) {
+
+            if (games.length > 0) {
+
+                var home = games[0].home;
+                var away = games[0].away;
+
+                home.players = _generatePlayers(home.name, home.colour, home.players);
+                away.players = _generatePlayers(away.name, away.colour, away.players);
+
+                dfd.resolve(games[0]);
+            }
+        });
+
+        return dfd;
+    }
+
     function playerMove (player, newPosition) {
 
         var dfd = new $.Deferred();
@@ -146,6 +168,7 @@ define(function(require){
 
     return {
 
+        getGame     : getGame,
         getTeams    : getTeams,
         playerMove  : playerMove,
         dodge       : dodge
