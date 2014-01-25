@@ -132,18 +132,20 @@ define(function(require){
 
         var dfd = new $.Deferred();
 
-        $.get(config.apiServer + '/games')
-        .done(function (games) {
+        $.get(config.apiServer + '/games/0')
+        .done(function (game) {
 
-            if (games.length > 0) {
+            console.log(game);
 
-                var home = games[0].home;
-                var away = games[0].away;
+            if (game) {
+
+                var home = game.home;
+                var away = game.away;
 
                 home.players = _generatePlayers(home.name, home.colour, home.players);
                 away.players = _generatePlayers(away.name, away.colour, away.players);
 
-                dfd.resolve(games[0]);
+                dfd.resolve(game);
             }
         });
 
