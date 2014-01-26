@@ -135,8 +135,6 @@ define(function(require){
         $.get(config.apiServer + '/games/0')
         .done(function (game) {
 
-            console.log(game);
-
             if (game) {
 
                 var home = game.home;
@@ -152,18 +150,38 @@ define(function(require){
         return dfd;
     }
 
-    function playerMove (player, newPosition) {
+    function movePlayerOneSquare (player, newPosition) {
+
+        console.log('movePlayerOneSquare()');
 
         var dfd = new $.Deferred();
 
         var data = {
 
-            "x" : newPosition.gridX,
-            "y" : newPosition.gridY
+            "x" : newPosition[0],
+            "y" : newPosition[1]
         };
 
-        $.post(config.apiServer + '/players/' + player.id + '/move', data)
-        .done(dfd.resolve);
+        console.log(data);
+
+        $.ajax({
+            type: 'POST',
+            url: config.apiServer + '/players/' + player.attributes._id + '/move',
+            data: data,
+            dataType : 'json',
+        })
+        .done(function (data) {
+
+            dfd.resolve(data);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+
+            dfd.reject();
+        });
 
         return dfd;
     }
@@ -172,7 +190,7 @@ define(function(require){
 
         getGame     : getGame,
         getTeams    : getTeams,
-        playerMove  : playerMove,
+        movePlayerOneSquare  : movePlayerOneSquare,
         dodge       : dodge
     };
 });

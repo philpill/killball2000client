@@ -205,6 +205,7 @@ define(function(require){
 
         this.attributes = {};
 
+        this.attributes._id = data._id;
         this.attributes.name = data.name;
         this.attributes.position = data.position;
         this.attributes.number = data.number;
@@ -215,6 +216,7 @@ define(function(require){
         this.attributes.armour = 7;
         this.attributes.colour = teamColour;
         this.attributes.teamName = teamName;
+
 
         this._playerShape = new createjs.Shape();
         this.addChild(this._playerShape);

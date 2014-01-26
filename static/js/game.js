@@ -199,8 +199,6 @@ define(function(require){
 
     function movementComplete () {
 
-        createjs.Ticker.removeAllEventListeners('tick');
-
         this.selected.render(config.player.inactiveOpacity);
 
         this._pitch.clearTiles();
@@ -234,37 +232,76 @@ define(function(require){
 
     function movePlayer (player, path, target) {
 
-        var position = utils.getPositionFromGrid(path[0], path[1]);
+        // var position = utils.getPositionFromGrid(path[0], path[1]);
 
-        var tackleZoneGrid = utils.getTackleZoneGrid(_gameTurnTeam, _opposingTeam);
+        // var tackleZoneGrid = utils.getTackleZoneGrid(_gameTurnTeam, _opposingTeam);
 
-        playerPosition = utils.getPosition(player.x, player.y);
+        // var playerPosition = utils.getPosition(player.x, player.y);
 
-        var currentZone = tackleZoneGrid[playerPosition.gridX][playerPosition.gridY];
+        // var currentZone = tackleZoneGrid[playerPosition.gridX][playerPosition.gridY];
 
-        var destinationZone = tackleZoneGrid[position.gridX][position.gridY];
+        // var destinationZone = tackleZoneGrid[position.gridX][position.gridY];
 
-        if (currentZone > 0) {
+        // if (currentZone > 0) {
 
-            playerDodge.call(this, player, position, destinationZone, target);
+        //     playerDodge.call(this, player, position, destinationZone, target);
 
-        } else {
+        // } else {
 
-            player.playerMove.call(player, position);
+        //     player.playerMove.call(player, position);
 
-            setTimeout((function () {
+        //     setTimeout((function () {
 
-                playerMove.call(this, player, target);
+        //         playerMove.call(this, player, target);
 
-            }).bind(this), config.animation.movementRate);
-        }
+        //     }).bind(this), config.animation.movementRate);
+        // }
+    }
+
+    function movePlayerOneSquare (player, newPosition) {
+
+        $.when(server.movePlayerOneSquare(player, newPosition))
+        .then(movePlayerOneSquareSuccess.bind(this))
+        .fail(function () {
+
+            console.log('error');
+        });
+    }
+
+    function movePlayerOneSquareSuccess (data, textStatus, jqXHR) {
+
+        updateData.call(this, data);
+    }
+
+    function updateData (data) {
+
+        var updatedAwayPlayers = data.away.players;
+
+        var awayPlayers = this._data.away.players;
+
+        var stage = this.stage;
+
+        _.each(updatedAwayPlayers, function (updatedPlayer) {
+
+            _.each(awayPlayers, function (player) {
+
+                if (updatedPlayer._id === player.attributes._id) {
+
+                    // update attributes
+
+                    var position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
+
+                    player.playerMove.call(player, position);
+
+                    stage.update();
+                }
+            });
+        });
     }
 
     function playerMove (player, target) {
 
         this._pitch.clearTiles();
-
-        this.selected.hasMoved = true;
 
         var playerPosition = utils.getPosition(player.x, player.y);
 
@@ -272,11 +309,11 @@ define(function(require){
 
         var limitedPath = getPath.call(this, playerPosition, targetPosition);
 
-        var path = limitedPath.pop();
+        var newPosition = limitedPath.pop();
 
-        if (path) {
+        if (newPosition) {
 
-            movePlayer.call(this, player, path, target);
+            movePlayerOneSquare.call(this, player, newPosition);
 
         } else {
 
@@ -366,9 +403,9 @@ define(function(require){
 
     function getGameSuccess (data) {
 
-        loadTeams.call(this, [data.home, data.away]);
+        this._data = data;
 
-        this.stage.update();
+        loadTeams.call(this, [data.home, data.away]);
 
         this.stage.enableMouseOver();
 
@@ -399,6 +436,8 @@ define(function(require){
         load.call(this);
 
         bindEvents.call(this);
+
+        this.stage.update();
     }
 
     function Game() {
