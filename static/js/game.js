@@ -258,22 +258,9 @@ define(function(require){
         // }
     }
 
-    function movePlayerOneSquare (player, newPosition) {
-
-        $.when(server.movePlayerOneSquare(player, newPosition))
-        .then(movePlayerOneSquareSuccess.bind(this))
-        .fail(function () {
-
-            console.log('error');
-        });
-    }
-
-    function movePlayerOneSquareSuccess (data, textStatus, jqXHR) {
-
-        updateData.call(this, data);
-    }
-
     function updateData (data) {
+
+        console.log(data);
 
         var updatedAwayPlayers = data.away.players;
 
@@ -287,7 +274,7 @@ define(function(require){
 
                 if (updatedPlayer._id === player.attributes._id) {
 
-                    // update attributes
+                    player.hasMoved = updatedPlayer.hasMoved;
 
                     var position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
 
@@ -297,6 +284,27 @@ define(function(require){
                 }
             });
         });
+    }
+
+    function movePlayerOneSquare (player, newPosition, target) {
+
+        $.when(server.movePlayerOneSquare(player, newPosition))
+        .then((function (data) {
+
+            movePlayerOneSquareSuccess.call(this, data, player, target);
+
+        }).bind(this))
+        .fail(function () {
+
+            console.log('error');
+        });
+    }
+
+    function movePlayerOneSquareSuccess (data, player, target) {
+
+        updateData.call(this, data);
+
+        setTimeout(playerMove.bind(this, player, target), config.animation.movementRate);
     }
 
     function playerMove (player, target) {
@@ -313,7 +321,7 @@ define(function(require){
 
         if (newPosition) {
 
-            movePlayerOneSquare.call(this, player, newPosition);
+            movePlayerOneSquare.call(this, player, newPosition, target);
 
         } else {
 
