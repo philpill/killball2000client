@@ -1,27 +1,39 @@
 define(function(require){
-    var createjs = require('easel');
-    var config = require('config');
-    var server = require('server');
-    var Pitch = require('pitch');
-    var Cursor = require('cursor');
-    var utils = require('utils');
-    var logger = require('logger');
-    var _gameTurn;
-    var _gameTurnTeam;
-    var _opposingTeam;
-    var _gameTurnNumber;
+
+    "use strict";
+
+    var $           = require('jquery'),
+        createjs    = require('easel'),
+        config      = require('config'),
+        server      = require('server'),
+        Pitch       = require('pitch'),
+        Cursor      = require('cursor'),
+        utils       = require('utils'),
+        logger      = require('logger');
+    var _gameTurn,
+        _gameTurnTeam,
+        _opposingTeam,
+        _gameTurnNumber;
+
     function newTurn() {
         deselect.call(this);
-        _gameTurnNumber++;
-        _gameTurnTeam = _gameTurnNumber%2 === 0 ? this._teams[0] : this._teams[1];
-        _opposingTeam = _gameTurnNumber%2 === 0 ? this._teams[1] : this._teams[0];
-        deactivatePlayers(_opposingTeam.players);
-        activatePlayers(_gameTurnTeam.players);
-        $('.game .turn-number.value').text(_gameTurnNumber);
-        $('.game .turn-team.value').text(_gameTurnTeam.name);
-        this.stage.update();
-        this._pitch.load(_opposingTeam.players);
-        logger.log('new team turn: ' + _gameTurnTeam.name);
+        $.when(server.newTurn(this._data.turn+1))
+        .then((function (data) {
+            updateData.call(this, data);
+            _gameTurnNumber = this._data.turn;
+            _gameTurnTeam = this._data.currentTeam.isHome ? this._data['home'] : this._data['away'];
+            _opposingTeam = this._data.currentTeam.isHome ? this._data['away'] : this._data['home'];
+            deactivatePlayers(_opposingTeam.players);
+            activatePlayers(_gameTurnTeam.players);
+            $('.game .turn-number.value').text(_gameTurnNumber);
+            $('.game .turn-team.value').text(_gameTurnTeam.name);
+            this.stage.update();
+            this._pitch.load(_opposingTeam.players);
+            logger.log('new team turn: ' + _gameTurnTeam.name);
+        }).bind(this))
+        .fail(function () {
+            console.log('error');
+        });
     }
     function activatePlayers (players) {
         var i = players.length;
@@ -153,20 +165,41 @@ define(function(require){
         // }
     }
     function updateData (data) {
-        console.log(data);
-        var updatedAwayPlayers = data.away.players;
+        var updatedAwayPlayers = data && data.away ? data.away.players : [];
         var awayPlayers = this._data.away.players;
+        var updatedHomePlayers = data && data.home ? data.home.players : [];
+        var homePlayers = this._data.home.players;
         var stage = this.stage;
         _.each(updatedAwayPlayers, function (updatedPlayer) {
             _.each(awayPlayers, function (player) {
                 if (updatedPlayer._id === player.attributes._id) {
                     player.hasMoved = updatedPlayer.hasMoved;
-                    var position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
+                    position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
                     player.playerMove.call(player, position);
                     stage.update();
                 }
             });
         });
+        _.each(updatedHomePlayers, function (updatedPlayer) {
+            _.each(homePlayers, function (player) {
+                if (updatedPlayer._id === player.attributes._id) {
+                    player.hasMoved = updatedPlayer.hasMoved;
+                    position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
+                    player.playerMove.call(player, position);
+                    stage.update();
+                }
+            });
+        });
+    }
+    function mergeData (newData) {
+
+
+        console.log(data);
+
+
+        var data = this._data;
+
+        $.extend(this._data, newData)
     }
     function movePlayerOneSquare (player, newPosition, target) {
         $.when(server.movePlayerOneSquare(player, newPosition))

@@ -6,7 +6,7 @@ define(function(require){
     require('sinon');
     require('jquery');
     var mock = require('mock');
-    var successTable = [6, 6, 5, 4, 3, 2, 1];
+    var successTable = [6, 5, 4, 3, 2, 1];
     function _getRandom (max, min) {
         min = min || 1;
         max = max || 6;
@@ -86,6 +86,24 @@ define(function(require){
         });
         return dfd;
     }
+    function newTurn (turn) {
+        var dfd = new $.Deferred();
+        $.ajax({
+            url: config.apiServer + '/games/0',
+            data: { turn: turn },
+            type: 'PUT'
+        })
+        .done(function (game) {
+            if (game) {
+                var home = game.home;
+                var away = game.away;
+                home.players = _generatePlayers(home.name, home.colour, home.players);
+                away.players = _generatePlayers(away.name, away.colour, away.players);
+                dfd.resolve(game);
+            }
+        });
+        return dfd;
+    }
     function movePlayerOneSquare (player, newPosition) {
         console.log('movePlayerOneSquare()');
         var dfd = new $.Deferred();
@@ -115,6 +133,7 @@ define(function(require){
         getGame     : getGame,
         getTeams    : getTeams,
         movePlayerOneSquare  : movePlayerOneSquare,
-        dodge       : dodge
+        dodge       : dodge,
+        newTurn     : newTurn
     };
 });
