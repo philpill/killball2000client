@@ -1,8 +1,8 @@
 define(function() {
 
-    // var api = "http://server-killball2000.rhcloud.com";
+    var api = "http://server-killball2000.rhcloud.com";
 
-    var api = "http://localhost:8090";
+    // var api = "http://localhost:8090";
 
     return {
 

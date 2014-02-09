@@ -105,13 +105,11 @@ define(function(require){
         return dfd;
     }
     function movePlayerOneSquare (player, newPosition) {
-        console.log('movePlayerOneSquare()');
         var dfd = new $.Deferred();
         var data = {
             "x" : newPosition[0],
             "y" : newPosition[1]
         };
-        console.log(data);
         $.ajax({
             type: 'POST',
             url: config.apiServer + '/players/' + player.attributes._id + '/move',

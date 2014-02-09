@@ -170,11 +170,12 @@ define(function(require){
         var updatedHomePlayers = data && data.home ? data.home.players : [];
         var homePlayers = this._data.home.players;
         var stage = this.stage;
+        this._data.currentTeam = data.currentTeam;
         _.each(updatedAwayPlayers, function (updatedPlayer) {
             _.each(awayPlayers, function (player) {
                 if (updatedPlayer._id === player.attributes._id) {
                     player.hasMoved = updatedPlayer.hasMoved;
-                    position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
+                    var position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
                     player.playerMove.call(player, position);
                     stage.update();
                 }
@@ -184,7 +185,7 @@ define(function(require){
             _.each(homePlayers, function (player) {
                 if (updatedPlayer._id === player.attributes._id) {
                     player.hasMoved = updatedPlayer.hasMoved;
-                    position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
+                    var position = utils.getPositionFromGrid(updatedPlayer.x, updatedPlayer.y);
                     player.playerMove.call(player, position);
                     stage.update();
                 }
@@ -192,10 +193,6 @@ define(function(require){
         });
     }
     function mergeData (newData) {
-
-
-        console.log(data);
-
 
         var data = this._data;
 
