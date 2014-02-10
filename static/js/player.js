@@ -8,20 +8,20 @@ define(function(require){
     var utils = require('utils');
     var attributes = {
         position:   'lineman',
-        move:       6,
+        movement:   6,
         strength:   3,
         agility:    3,
         armour:     7
     };
     function getMoves() {
-        var move = this.attr('move');
+        var movement = this.attr('movement');
         var x = this.attr('x');
         var y = this.attr('y');
         var position = utils.getPosition(x, y);
-        var left = position.gridX - move;
-        var right = position.gridX + move + 1;
-        var top = position.gridY - move;
-        var bottom = position.gridY + move + 1;
+        var left = position.gridX - movement;
+        var right = position.gridX + movement + 1;
+        var top = position.gridY - movement;
+        var bottom = position.gridY + movement + 1;
         left = left < 0 ? 0 : left;
         right = right < config.width ? right : config.width;
         top = top < 0 ? 0 : top;
@@ -125,15 +125,11 @@ define(function(require){
         this.setInactive        = setInactive;
         this.getZone            = getZone;
         this.playerProned       = playerProned;
-        this.attributes = {};
+        this.attributes = data.attributes;
         this.attributes._id = data._id;
         this.attributes.name = data.name;
         this.attributes.position = data.position;
         this.attributes.number = data.number;
-        this.attributes.move = 6;
-        this.attributes.strength = 3;
-        this.attributes.agility = 3;
-        this.attributes.armour = 7;
         this.attributes.colour = teamColour;
         this.attributes.teamName = teamName;
         this._playerShape = new createjs.Shape();

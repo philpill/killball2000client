@@ -65,14 +65,14 @@ define(function(require){
         var attributes = player && player.attributes ? player.attributes : {
             name        : '-',
             position    : '-',
-            move        : '-',
+            movement        : '-',
             strength    : '-',
             agility     : '-',
             armour      : '-'
         };
         $('span.name.value').text(attributes.name);
         $('span.position.value').text(attributes.position);
-        $('span.movement.value').text(attributes.move);
+        $('span.movement.value').text(attributes.movement);
         $('span.strength.value').text(attributes.strength);
         $('span.agility.value').text(attributes.agility);
         $('span.armour.value').text(attributes.armour);
@@ -128,7 +128,7 @@ define(function(require){
             grid,
             [ playerPosition.gridX, playerPosition.gridY ],
             [ cursorPosition.gridX, cursorPosition.gridY ]);
-        var limit = this.selected.attributes.move + 1;
+        var limit = this.selected.attributes.movement + 1;
         return path.slice(1, limit).reverse();
     }
     function movementComplete () {
@@ -209,15 +209,17 @@ define(function(require){
     }
     function movePlayerOneSquareSuccess (data, player, target) {
         updateData.call(this, data);
+        player.attributes.moved = player.attributes.moved + 1;
         setTimeout(playerMove.bind(this, player, target), config.animation.movementRate);
     }
     function playerMove (player, target) {
         this._pitch.clearTiles();
+        player.attributes.moved = player.attributes.moved || 0;
         var playerPosition = utils.getPosition(player.x, player.y);
         var targetPosition = utils.getPosition(target.x, target.y);
         var limitedPath = getPath.call(this, playerPosition, targetPosition);
         var newPosition = limitedPath.pop();
-        if (newPosition) {
+        if (newPosition && player.attributes.moved < player.attributes.movement) {
             movePlayerOneSquare.call(this, player, newPosition, target);
         } else {
             movementComplete.call(this);
@@ -284,7 +286,7 @@ define(function(require){
             this._pitch.renderMovementPath(
                 { x: this.selected.x, y: this.selected.y },
                 { x: position.snapX, y: position.snapY },
-                this.selected.attributes.move
+                this.selected.attributes.movement
             );
         }
         this.stage.update();
